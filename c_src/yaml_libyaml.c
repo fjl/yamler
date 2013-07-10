@@ -45,9 +45,18 @@ static ERL_NIF_TERM mem_to_binary(ErlNifEnv *env, const unsigned char *cstr, siz
 
 static ERL_NIF_TERM cstr_to_binary(ErlNifEnv *env, const unsigned char *cstr)
 {
-    if(cstr)
+    size_t len;
+    const unsigned char *cstr_end;
+
+    if(cstr != NULL)
     {
-        return mem_to_binary(env, cstr, strlen(cstr));
+        len = 0;
+        cstr_end = cstr;
+        while(*(cstr_end++)) {
+            len++;
+        }
+
+        return mem_to_binary(env, cstr, len);
     }
     else
     {
@@ -293,7 +302,7 @@ parser_error:
                             enif_make_atom(env, "error"),
                             enif_make_tuple2(env,
                                              enum_to_atom(env, error, error_type_atoms),
-                                             cstr_to_binary(env,msg)));
+                                             cstr_to_binary(env, (const unsigned char*) msg)));
 
 }
 
